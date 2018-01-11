@@ -4,13 +4,11 @@ package com.lwen.listen.spider;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
-@Component
 public class Spider {
     private Map<String,String> headers;
     private String url;
@@ -22,8 +20,8 @@ public class Spider {
         this.headers = headers;
         this.data = data;
         this.cookie = cookie;
-        generateUrl();
         this.url = url;
+//        generateUrl();
         this.con = Jsoup.connect(url);
     }
 
@@ -42,7 +40,7 @@ public class Spider {
      * @return Document
      *
      */
-    public Document postRequest(){
+    public String postRequest(){
         init();
         Document result = null;
         try {
@@ -51,7 +49,7 @@ public class Spider {
             System.out.println("POST 请求错误 !");
             e.printStackTrace();
         }
-        return result;
+        return result.body().html();
     }
 
     /**
@@ -63,7 +61,7 @@ public class Spider {
         init();
         Document result = null;
         try {
-            result = con.get();
+            result = con.ignoreContentType(true).get();
         } catch (IOException e) {
             System.out.println("GET 请求错误 !");
             e.printStackTrace();
@@ -93,7 +91,10 @@ public class Spider {
      * 生成真正的 Url
      */
     private void generateUrl(){
-        this.url = url + mapToString(this.data);
+//        System.out.println(this.url);
+//        System.out.println(mapToString(this.data));
+//        this.url = "";
+        this.url = this.url + mapToString(this.data);
     }
 
 }

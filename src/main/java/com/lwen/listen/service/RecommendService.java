@@ -1,18 +1,25 @@
 package com.lwen.listen.service;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.lwen.listen.entity.PlayList;
+import com.lwen.listen.entity.Tag;
+import com.lwen.listen.entity.User;
 import com.lwen.listen.spider.Spider;
-import org.jsoup.nodes.Document;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class RecommendService extends HomeService{
+@Component
+public class RecommendService extends HomeService {
     private Spider spider;
 
-    public RecommendService(){
+    public RecommendService() {
         Map<String, String> headers = new HashMap<>();
         Map<String, String> data = new HashMap<>();
         Map<String, String> cookie = new HashMap<>();
@@ -25,15 +32,38 @@ public class RecommendService extends HomeService{
         spider = new Spider(headers, url, data, cookie);
     }
 
-    public PlayList getRecommendPlayList(){
-        Document document = spider.getRequest();
-        System.out.println(document.body().html());
+    public List<PlayList> getRecommendPlayList() {
+        String document = spider.getRequest().body().html();
+        List<PlayList> result = new ArrayList<>();
         Gson gson = new Gson();
-        JsonObject jsonObject= gson.fromJson(document.body().html().toString(), JsonObject.class);
-        PlayList playList= gson.fromJson(document.body().html().toString(), PlayList.class);
-        System.out.println(jsonObject.get("playlists").getAsJsonArray().get(0));
-//        jsonObject.get()
+        JsonObject jsonObject = gson.fromJson(document, JsonObject.class);
+        JsonArray jsonArray = jsonObject.get("playlists").getAsJsonArray();
+        for (JsonElement aJsonArray : jsonArray) {
+            result.add(JsonToBean(aJsonArray));
+        }
+        return result;
+    }
 
-        return new PlayList();
+    public PlayList JsonToBean(JsonElement aJsonArray) {
+            JsonObject item = aJsonArray.getAsJsonObject();
+            // Attributes Java bean need
+            String name = item.get("name").toString().replaceAll("\"", "");
+            Long id = Long.parseLong(item.get("id").toString().replaceAll("\"", ""));
+            String updateTime = item.get("updateTime").toString().replaceAll("\"", "");
+            String createTime = item.get("createTime").toString().replaceAll("\"", "");
+            Long uid = Long.parseLong(item.get("userId").toString().replaceAll("\"", ""));
+            Long subscribedCount = Long.parseLong(item.get("subscribedCount").toString().replaceAll("\"", ""));
+            Long trackCount = Long.parseLong(item.get("trackCount").toString().replaceAll("\"", ""));
+            String coverImgUrl = item.get("coverImgUrl").toString().replaceAll("\"", "");
+            String description = item.get("description").toString().replaceAll("\"", "");
+            Long playCount = Long.parseLong(item.get("playCount").toString().replaceAll("\"", ""));
+            String commentId = item.get("commentThreadId").toString().replaceAll("\"", "");
+            Long shareCount = Long.parseLong(item.get("shareCount").toString().replaceAll("\"", ""));
+            Long commentCount = Long.parseLong(item.get("commentCount").toString().replaceAll("\"", ""));
+            User createUser = new UserService().JsonToBean(item.get("creator"));
+            List<Tag> tags = new TagService().JsonToBean(item.get("tags"));
+
+            PlayList playList = new PlayList(id, name, updateTime, createTime, uid, subscribedCount, trackCount, coverImgUrl, description, playCount, commentId, shareCount, commentCount, createUser, tags, null);
+            return playList;
     }
 }

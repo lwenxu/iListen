@@ -4,11 +4,13 @@ package com.lwen.listen.spider;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
+@Component
 public class Spider {
     private Map<String,String> headers;
     private String url;

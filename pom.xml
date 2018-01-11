@@ -71,6 +71,21 @@
 			<version>1.16.16</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.jboss.arquillian.container/arquillian-container-test-api -->
+		<!--<dependency>-->
+			<!--<groupId>org.jboss.arquillian.container</groupId>-->
+			<!--<artifactId>arquillian-container-test-api</artifactId>-->
+			<!--<version>1.2.0.Final</version>-->
+		<!--</dependency>-->
+
+		<!--&lt;!&ndash; https://mvnrepository.com/artifact/org.jboss.arquillian.junit/arquillian-junit-container &ndash;&gt;-->
+		<!--<dependency>-->
+			<!--<groupId>org.jboss.arquillian.junit</groupId>-->
+			<!--<artifactId>arquillian-junit-container</artifactId>-->
+			<!--<version>1.2.0.Final</version>-->
+			<!--<scope>test</scope>-->
+		<!--</dependency>-->
+
 	</dependencies>
 
 	<build>

@@ -9,6 +9,5 @@ import java.util.List;
 public interface MusicRepository extends JpaRepository<Music,Long> {
      List<Music> findByNameLike(String name);
 
-     Music findByMId(Long id);
-
+    Music findById(Long id);
 }

@@ -21,4 +21,9 @@ public class AlbumServiceTest {
     public void getMusicListByAlbumId() {
         System.out.println(service.getMusicListByAlbumId(17918L));
     }
+
+    @Test
+    public void getAlbumListByArtistId() {
+        service.getAlbumListByArtistId(12L);
+    }
 }

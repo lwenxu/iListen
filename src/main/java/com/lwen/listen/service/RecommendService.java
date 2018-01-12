@@ -10,10 +10,7 @@ import com.lwen.listen.entity.User;
 import com.lwen.listen.spider.Spider;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class RecommendService extends HomeService {
@@ -61,7 +58,7 @@ public class RecommendService extends HomeService {
             Long shareCount = Long.parseLong(item.get("shareCount").toString().replaceAll("\"", ""));
             Long commentCount = Long.parseLong(item.get("commentCount").toString().replaceAll("\"", ""));
             User createUser = new UserService().JsonToBean(item.get("creator"));
-            List<Tag> tags = new TagService().JsonToBean(item.get("tags"));
+            Set<Tag> tags = new TagService().JsonToBean(item.get("tags"));
 
             PlayList playList = new PlayList(id, name, updateTime, createTime, uid, subscribedCount, trackCount, coverImgUrl, description, playCount, commentId, shareCount, commentCount, createUser, tags, null);
             return playList;

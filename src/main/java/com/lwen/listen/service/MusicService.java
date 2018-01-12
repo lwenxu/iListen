@@ -8,16 +8,17 @@ import com.lwen.listen.entity.Artist;
 import com.lwen.listen.entity.Music;
 import lombok.NonNull;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MusicService extends HomeService{
 
     private ArtistService artistService = new ArtistService();
 
 
-    public List<Music> JsonToBeanList(JsonArray asJsonArray) {
-        List<Music> result = new ArrayList<>();
+    public Set<Music> JsonToBeanList(JsonArray asJsonArray) {
+        Set<Music> result = new HashSet<>();
         for (JsonElement item : asJsonArray) {
             result.add(JsonToBean(item.getAsJsonObject()));
         }
@@ -31,7 +32,7 @@ public class MusicService extends HomeService{
         Long id=jsonObject.get("id").getAsLong();
         String alias = jsonObject.get("alias").getAsJsonArray().size() != 0 ? jsonObject.get("alias").getAsJsonArray().get(0).getAsString() : "";
         String copyrightId = jsonObject.get("copyrightId").getAsString();
-        List<Artist> artists=artistService.JsonToBeanList(jsonObject.get("artists").getAsJsonArray());
+        Set<Artist> artists=artistService.JsonToBeanList(jsonObject.get("artists").getAsJsonArray());
         Album album = albumService.JsonToBean(jsonObject.get("album").getAsJsonObject());
         Boolean starred = jsonObject.get("starred").getAsBoolean();
         String crbt = jsonObject.get("crbt").isJsonNull()?"":jsonObject.get("crbt").getAsString();

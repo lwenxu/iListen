@@ -27,7 +27,7 @@ http://music.163.com/api/artist/artist_id
 ```json
 http://music.163.com/api/artist/albums/artist_id?offset=0&limit=50
 ```
-#### 2. 根据专辑 id 获取专辑列表
+#### 2. 根据专辑 id 获取专辑内的歌曲
 ```json
 http://music.163.com/api/album/%s/' % album_id
 ```

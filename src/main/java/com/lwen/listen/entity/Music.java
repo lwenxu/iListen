@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 @Entity @Table @Data @NoArgsConstructor @AllArgsConstructor
 public class Music {
@@ -13,8 +13,8 @@ public class Music {
     private String name;
     private String alias ;
     private String copyrightId ;
-    private List<Artist> artists;
-    private Album album ;
+    @JoinColumn @ManyToMany private Set<Artist> artists;
+    @JoinColumn @ManyToOne private Album album ;
     private Boolean starred ;
     private String crbt ;
     private String commentId;

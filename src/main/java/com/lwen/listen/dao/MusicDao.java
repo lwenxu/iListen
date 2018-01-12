@@ -21,7 +21,7 @@ public class MusicDao {
     }
 
     public Music findMusicById(Long id) {
-        return repository.findByMId(id);
+        return repository.findById(id);
     }
 
 }

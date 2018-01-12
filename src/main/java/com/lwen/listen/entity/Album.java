@@ -17,7 +17,7 @@ public class Album {
     private String tags;
     private String company;
     private String briefDesc;
-    private Artist artists;
+    @JoinColumn @ManyToOne private Artist artists;
     private String commentThreadId;
 //    @Id private Long aId;
 //    private String name;

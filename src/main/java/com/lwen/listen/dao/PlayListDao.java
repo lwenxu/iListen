@@ -18,7 +18,7 @@ public class PlayListDao {
     }
 
     public List<PlayList> findByName(String name) {
-        return repository.findByListNameLike("%"+name+"%");
+        return repository.findByNameLike("%"+name+"%");
     }
 
 

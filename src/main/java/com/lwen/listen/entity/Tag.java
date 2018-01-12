@@ -5,10 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Table @Component @Data @NoArgsConstructor @AllArgsConstructor
+@Entity @Table @Component @Data @NoArgsConstructor @AllArgsConstructor
 public class Tag {
     @Id private Integer id;
     private String typeName;

@@ -8,8 +8,9 @@ import com.lwen.listen.entity.PlayList;
 import com.lwen.listen.spider.Spider;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 public class PlayListService extends HomeService{
     RecommendService recommendService = new RecommendService();
     private Spider spider;
@@ -31,7 +32,7 @@ public class PlayListService extends HomeService{
 
         PlayList playList = recommendService.JsonToBean(jsonElement);
         MusicService musicService = new MusicService();
-        List<Music> music = musicService.JsonToBeanList(jsonElement.getAsJsonObject().get("tracks").getAsJsonArray());
+        Set<Music> music = musicService.JsonToBeanList(jsonElement.getAsJsonObject().get("tracks").getAsJsonArray());
         playList.setMusics(music);
 
         System.out.println(playList);

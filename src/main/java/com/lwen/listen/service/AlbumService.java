@@ -9,9 +9,7 @@ import com.lwen.listen.spider.Spider;
 import lombok.NonNull;
 import org.jsoup.nodes.Document;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AlbumService extends HomeService {
     private ArtistService artistService = new ArtistService();
@@ -48,9 +46,34 @@ public class AlbumService extends HomeService {
         return document;
     }
 
-    public List<Music> getMusicListByAlbumId(Long albumId){
+    public Set<Music> getMusicListByAlbumId(Long albumId){
         Gson gson = new Gson();
         @NonNull JsonObject jsonObject = gson.fromJson(getMusicJsonByAlbumId(albumId).body().html(), JsonObject.class);
         return musicService.JsonToBeanList(jsonObject.get("album").getAsJsonObject().get("songs").getAsJsonArray());
     }
+
+    /**
+     * TODO::方法体  cheating ！！！！
+     * 根据歌手 id 获取歌手的所有的专辑列表
+     * @param artistId 歌手id
+     * @return 专辑列表
+     */
+    public List<Album> getAlbumListByArtistId(Long artistId){
+
+        Map<String, String> headers = new HashMap<>();
+        Map<String, String> data = new HashMap<>();
+        Map<String, String> cookie = new HashMap<>();
+        String url = "http://music.163.com/api/artist/albums/9606";
+        headers.put("Referer", "http://music.163.com");
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        cookie.put("appver", "2.0.2");
+        Spider spider = new Spider(headers, url, data, cookie);
+        Document document = spider.getRequest();
+
+        return new ArrayList<>();
+    }
+
+//    public List<Album> getAlbumById(Long albumId){
+//
+//    }
 }

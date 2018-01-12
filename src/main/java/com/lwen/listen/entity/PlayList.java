@@ -5,10 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.util.List;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity @Table @Data @NoArgsConstructor @AllArgsConstructor
 public class PlayList {
@@ -25,7 +23,9 @@ public class PlayList {
     private String commentId;
     private Long shareCount;
     private Long commentCount;
-    private User createUser;
-    private List<Tag> tags;
-    private List<Music> musics;
+    @JoinColumn @OneToOne private User createUser;
+//    @ManyToMany(cascade = CascadeType.PERSIST, fetch=FetchType.LAZY)
+//    @JoinTable(name="playlist_tags",joinColumns={@JoinColumn(name="t_id")},inverseJoinColumns={@JoinColumn(name="p_id")})
+    @JoinColumn @ManyToMany private Set<Tag> tags;
+    @JoinColumn @ManyToMany private Set<Music> musics;
 }

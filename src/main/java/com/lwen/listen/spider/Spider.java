@@ -1,6 +1,7 @@
 package com.lwen.listen.spider;
 
 
+import com.lwen.listen.utils.EncryptTools;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -40,16 +41,79 @@ public class Spider {
      * @return Document
      *
      */
-    public String postRequest(){
-        init();
-        Document result = null;
+    public static String postRequest(String url,String data) {
+        String secKey =  EncryptTools.createSecretKey(16);
+        String nonce = "0CoJUm6Qyw8W8jud";
+        // 2次AES加密，得到params
+        String params = null;
         try {
-            result = con.post();
+            params = EncryptTools.aesEncrypt(EncryptTools.aesEncrypt(data, nonce), secKey);
+        } catch (Exception e) {
+            System.out.println("加密失败");
+             e.printStackTrace();
+        }
+        //RAS 得到encSecKey
+        String encSecKey = EncryptTools.rasEncrypt(secKey);
+        // 登录请求
+        Document document =
+                null;
+        try {
+            document = Jsoup.connect(url)
+                    .header("Accept", "*/*")
+                    .header("Referer", "http://music.163.com/")
+                    .header("Accept-Language", "zh-CN,zh;q=0.8,gl;q=0.6,zh-TW;q=0.4")
+                    .header("Connection", "keep-alive")
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .header("Host", "music.163.com")
+                    .header("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1")
+                    .data("params", params)
+                    .data("encSecKey", encSecKey)
+                    .ignoreContentType(true)
+                    .post();
         } catch (IOException e) {
-            System.out.println("POST 请求错误 !");
+            System.out.println("POST 请求失败！");
             e.printStackTrace();
         }
-        return result.body().html();
+        return document.text();
+    }
+
+
+    public static String getRequest(String url, String query) {
+        url = url + "?" + query;
+        Document document =
+                null;
+        try {
+            document = Jsoup.connect(url)
+                    .header("Accept", "*/*")
+                    .header("Referer", "http://music.163.com/")
+                    .header("Accept-Language", "zh-CN,zh;q=0.8,gl;q=0.6,zh-TW;q=0.4")
+                    .header("Connection", "keep-alive")
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .header("Host", "music.163.com")
+                    .header("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1")
+                    .ignoreContentType(true)
+                    .get();
+        } catch (IOException e) {
+            System.out.println("GET 请求失败");
+        }
+        return document.text();
+    }
+
+    public static String postRequest(String url,
+                                     Map<String, String> header,
+                                     Map<String, String> data,
+                                     Map<String, String> cookie) {
+        Connection connection = Jsoup.connect(url);
+        connection.headers(header);
+        connection.data(data);
+        connection.cookies(cookie);
+        String text = "";
+        try {
+            text = connection.post().text();
+        } catch (IOException e) {
+            System.out.println("post 失败！");
+        }
+        return text;
     }
 
     /**

@@ -5,10 +5,15 @@ import org.junit.Test;
 
 public class PlayListServiceTest {
 
-    private PlayListService playListService = new PlayListService(430509126L);
+    private PlayListService playListService = new PlayListService();
 
     @Test
     public void getPlayListDetailByPlayListId() {
-        playListService.getPlayListDetailByPlayListId();
+        System.out.println(playListService.getPlayListDetailByPlayListId("3778678"));;
+    }
+
+    @Test
+    public void getTopLists() {
+        System.out.println(playListService.getTopPlayLists());;
     }
 }

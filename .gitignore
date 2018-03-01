@@ -6,3 +6,4 @@ target/
 *.iws
 *.iml
 *.ipr
+!/src/main/java/com/lwen/listen/service/MusicService.java

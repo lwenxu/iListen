@@ -6,37 +6,42 @@ import com.google.gson.JsonObject;
 import com.lwen.listen.entity.Music;
 import com.lwen.listen.entity.PlayList;
 import com.lwen.listen.spider.Spider;
+import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
+@Component
 public class PlayListService extends HomeService{
-    RecommendService recommendService = new RecommendService();
-    private Spider spider;
+    RecommendPlayListService recommendPlayListService = new RecommendPlayListService();
 
-    public PlayListService(Long id) {
-        Map<String, String> headers = new HashMap<>();
-        Map<String, String> data = new HashMap<>();
-        Map<String, String> cookie = new HashMap<>();
-        String url = "http://music.163.com/api/playlist/detail";
-        data.put("id", id + "");
-        spider = new Spider(headers, url, data, cookie);
+    public PlayListService() {
     }
 
-    public PlayList getPlayListDetailByPlayListId(){
-        String document = spider.getRequest().body().html();
+    public PlayList getPlayListDetailByPlayListId(String id){
+        String document = Spider.getRequest("http://music.163.com/api/playlist/detail","id="+id);
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(document, JsonObject.class);
         JsonElement jsonElement = jsonObject.get("result");
 
-        PlayList playList = recommendService.JsonToBean(jsonElement);
+        PlayList playList = recommendPlayListService.JsonToBean(jsonElement);
         MusicService musicService = new MusicService();
         Set<Music> music = musicService.JsonToBeanList(jsonElement.getAsJsonObject().get("tracks").getAsJsonArray());
         playList.setMusics(music);
-
-        System.out.println(playList);
-        return new PlayList();
+        return playList;
     }
 
+    public String getTopPlayLists() {
+        String document = Spider.postRequest("http://music.163.com/weapi/toplist/detail","{\"limit\":20,\"csrf_token\":\"\"}");
+        return document;
+    }
+
+    public String getLikedList(String uid) {
+        String data = "{\"uid\":\"" + uid + "\",\"csrf_token\":\"\"}";
+        return Spider.postRequest("http://music.163.com/weapi/song/like/get", data);
+    }
+
+    public String getUserPlayListById(String id,String offset,String limit) {
+        String data = "{\"offset\":\"" + offset + "\",\"uid\":\"" + id + "\",\"limit\":\"" + limit + "\",\"csrf_token\":\"\"}";
+        return Spider.postRequest("http://music.163.com/weapi/user/playlist", data);
+    }
 }

@@ -2,8 +2,8 @@ package com.lwen.listen.service;
 
 import org.junit.Test;
 
-public class RecommendServiceTest {
-    private RecommendService service = new RecommendService();
+public class RecommendPlayListServiceTest {
+    private RecommendPlayListService service = new RecommendPlayListService();
 
     @Test
     public void getRecommendPlayList() {

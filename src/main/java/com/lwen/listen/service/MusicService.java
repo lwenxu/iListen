@@ -6,12 +6,13 @@ import com.google.gson.JsonObject;
 import com.lwen.listen.entity.Album;
 import com.lwen.listen.entity.Artist;
 import com.lwen.listen.entity.Music;
+import com.lwen.listen.spider.Spider;
 import lombok.NonNull;
+import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+@Component
 public class MusicService extends HomeService{
 
     private ArtistService artistService = new ArtistService();
@@ -46,5 +47,41 @@ public class MusicService extends HomeService{
         Music music = new Music(id, name, alias, copyrightId, artists, album, starred, crbt, commentId, mvid, mp3Url, highId, mediumId, lowId);
 
         return music;
+    }
+
+    public String getMusicDetailById(String id) {
+        String data = "{\"id\":"+id+",\"c\":\"[{\\\"id\\\":"+id+"}]\",\"ids\":\"["+id+"]\",\"csrf_token\":\"\"}";
+        return Spider.postRequest("http://music.163.com/weapi/v3/song/detail",data);
+    }
+
+
+    public String getMusicUrlById(String id) {
+        String data = "{\"ids\":["+id+"],\"br\":\"128000\",\"csrf_token\":\"\"}";
+        return Spider.postRequest("http://music.163.com/weapi/song/enhance/player/url", data);
+    }
+
+    public String getCommentsById(String id, String limit, String offset, String type) {
+        String data = "{\"rid\":\"" + id + "\",\"offset\":\"" + offset + "\",\"limit\":\"" + limit + "\",\"total\":false,\"csrf_token\":\"\"}";
+        System.out.println(data);
+        type = type.equals("hot") ? "hotcomments" : "comments";
+        return Spider.postRequest("http://music.163.com/weapi/v1/resource/" + type + "/" + id, data);
+    }
+
+    public String getLyricById(String id) {
+        return Spider.getRequest("http://music.163.com/api/song/lyric", "os=osx&id=" + id + "&lv=-1&kv=-1&tv=-1");
+    }
+
+    public String searchByMusicName(String name, String limit, String type, String offset) {
+        // String data = "{\"s\":\"" + name + "\",\"offset\":\"" + offset + "\",\"limit\":\"" + limit + "\",\"type\":\"" + type + "\"}";
+        Map<String, String> data = new HashMap<>();
+        Map<String, String> header = new HashMap<>();
+        Map<String, String> cookie = new HashMap<>();
+        data.put("s", name);
+        data.put("limit", limit);
+        data.put("type", type);
+        data.put("offset", offset);
+        String url = "http://music.163.com/api/search/get/";
+        header.put("Cookie", "appver=2.0.2");
+        return Spider.postRequest(url, header, data, cookie);
     }
 }

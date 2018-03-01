@@ -16,6 +16,8 @@ public class AlbumService extends HomeService {
     private MusicService musicService = new MusicService();
 
     public Album JsonToBean(JsonObject album) {
+        // System.out.println(album);
+
         Long id = album.get("id").getAsLong();
         String name = album.get("name").getAsString();
         Integer size = album.get("size").getAsInt();
@@ -24,7 +26,7 @@ public class AlbumService extends HomeService {
         String publishTime = album.get("publishTime").getAsString();
         String description = album.get("description").getAsString();
         String tags = album.get("tags").getAsString();
-        String company = album.get("company").getAsString();
+        String company = album.get("company").isJsonNull()?"":album.get("company").getAsString();
         String briefDesc = album.get("briefDesc").getAsString();
         Artist artist = artistService.JsonToBean(album.get("artist").getAsJsonObject());
         String commentId = album.get("commentThreadId").getAsString();

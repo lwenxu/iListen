@@ -13,10 +13,10 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-public class RecommendService extends HomeService {
+public class RecommendPlayListService extends HomeService {
     private Spider spider;
 
-    public RecommendService() {
+    public RecommendPlayListService() {
         Map<String, String> headers = new HashMap<>();
         Map<String, String> data = new HashMap<>();
         Map<String, String> cookie = new HashMap<>();
@@ -29,8 +29,23 @@ public class RecommendService extends HomeService {
         spider = new Spider(headers, url, data, cookie);
     }
 
+
+    public RecommendPlayListService(Long offset,Long limit,String type) {
+        Map<String, String> headers = new HashMap<>();
+        Map<String, String> data = new HashMap<>();
+        Map<String, String> cookie = new HashMap<>();
+        String url = "http://music.163.com/api/playlist/list";
+        data.put("cat", type);
+        data.put("order", "1");
+        data.put("offset", offset+"");
+        data.put("total", "true");
+        data.put("limit", limit + "");
+        spider = new Spider(headers, url, data, cookie);
+    }
+
     public List<PlayList> getRecommendPlayList() {
         String document = spider.getRequest().body().html();
+        System.out.println(document);
         List<PlayList> result = new ArrayList<>();
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(document, JsonObject.class);
@@ -59,8 +74,8 @@ public class RecommendService extends HomeService {
             Long commentCount = Long.parseLong(item.get("commentCount").toString().replaceAll("\"", ""));
             User createUser = new UserService().JsonToBean(item.get("creator"));
             Set<Tag> tags = new TagService().JsonToBean(item.get("tags"));
-
-            PlayList playList = new PlayList(id, name, updateTime, createTime, uid, subscribedCount, trackCount, coverImgUrl, description, playCount, commentId, shareCount, commentCount, createUser, tags, null);
+            String coverImgId_str = item.get("coverImgId_str")==null?"": item.get("coverImgId_str").getAsString();
+            PlayList playList = new PlayList(id, name, updateTime,coverImgId_str ,createTime, uid, subscribedCount, trackCount, coverImgUrl, description, playCount, commentId, shareCount, commentCount, createUser, tags, null);
             return playList;
     }
 }

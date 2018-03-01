@@ -13,6 +13,7 @@ public class PlayList {
     @Id private Long id;
     private String name;
     private String updateTime;
+    private String coverImgId_str;
     private String createTime;
     private Long uid;
     private Long subscribedCount;

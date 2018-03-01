@@ -24,8 +24,7 @@ public class ArtistService extends HomeService {
     Artist JsonToBean(JsonObject artist) {
         String name = artist.get("name").getAsString();
         Long id = artist.get("id").getAsLong();
-        String picUrl = artist.get("picUrl").getAsString();
-
+        String picUrl = artist.get("picUrl") == null ? "" : artist.get("picUrl").getAsString();
         Artist result = new Artist(id, name, picUrl);
         return result;
     }

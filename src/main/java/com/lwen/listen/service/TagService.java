@@ -16,7 +16,7 @@ public class TagService extends HomeService{
             Integer id = 1;
             String typeName = item.getAsString();
 
-            Tag tag = new Tag(id, typeName);
+            Tag tag = new Tag();
             result.add(tag);
         }
         return result;
